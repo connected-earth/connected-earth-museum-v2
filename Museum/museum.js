@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { 
     BloomEffect, 
@@ -23,22 +22,25 @@ import { loadPointsFromJson } from './scripts/tour.js'
 
 // Utils
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
-const wrap  = (v, low, high) => low + ((((v - low) % (high - low)) + (high - low)) % (high - low));
+const wrap  = (v, low, high) =>
+  low + ((((v - low) % (high - low)) + (high - low)) % (high - low));
 const sign  = x => (x > 0) - (x < 0);
 
 // Scene variables
 let clock, scene, camera, renderer, composer, controls, museum;
-let savedCameraPosition = JSON.parse(localStorage.getItem("cameraPosition")) || { x: 4, y: 4, z: 4 };
+// Persist only the camera yaw (rotation about Y-axis)
+// If nothing is stored, default to 0.
+let savedCameraYaw = parseFloat(localStorage.getItem("cameraYaw")) || 0;
 const loadingScreen = document.getElementById("loading-screen");
 
 // Background variables
 let bgShaderMat = bgShaderMaterial; // alias if you wish
-let bgMesh, bgRenderTarget; // no longer needed if using a dedicated pass
+let bgMesh, bgRenderTarget;
 let bgCamera, bgScene;
 
 // Movement
 let tour_path    = null;
-let path_pos     = 0.0;
+let path_pos     = JSON.parse(localStorage.getItem("pathPos")) || 0.0;
 let path_vel     = 0.0;
 const path_acc   = 0.025;
 const path_fricc = 0.065;
@@ -61,7 +63,11 @@ function initRenderer() {
 function initSceneAndCamera() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(savedCameraPosition.x, savedCameraPosition.y, savedCameraPosition.z);
+  
+  // Create Euler angles with pitch and roll set to zero.
+  //const yawEuler = new THREE.Euler(0, savedCameraYaw, 0, 'YXZ');
+  //camera.quaternion.setFromEuler(yawEuler);
+  
   scene.add(camera);
 }
 
@@ -93,22 +99,17 @@ function initControls() {
   controls = new CameraControls(camera, renderer);
 }
 
-// Revised: Instead of rendering the background to a render target manually,
-// we initialize a separate scene with an orthographic camera and a full-screen quad.
 function initBackgroundShader() {
   bgScene = new THREE.Scene();
-  // Create an orthographic camera that covers the viewport.
   bgCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   
   const quadGeometry = new THREE.PlaneGeometry(2, 2);
   bgMesh = new THREE.Mesh(quadGeometry, bgShaderMat);
-  bgMesh.frustumCulled = false; // ensure the quad is always rendered
+  bgMesh.frustumCulled = false;
   bgScene.add(bgMesh);
 }
 
-// If you want to add extra postprocessing effects, you can do so in this function.
 function initPostProcessing() {
-  // Example: add additional effect passes as needed.
   composer.addPass(new EffectPass(camera, new BloomEffect({
     intensity: 1.1,
     luminanceThreshold: 0.9,
@@ -150,23 +151,17 @@ function initMuseum() {
   loadEnvironment();
   loadMuseumModel();
   initControls();
-  // IMPORTANT: Initialize the background shader before creating the composer!
   initBackgroundShader();
 
-  // Create EffectComposer and add two render passes:
-  // 1. The background pass using bgScene and bgCamera (this remains fixed).
-  // 2. The main scene pass using scene and camera.
   composer = new EffectComposer(renderer);
   const bgPass = new RenderPass(bgScene, bgCamera);
-  bgPass.clear = true; // clear before drawing the background
+  bgPass.clear = true;
   composer.addPass(bgPass);
 
-  // Create the main scene render pass and disable its clear flag.
   const scenePass = new RenderPass(scene, camera);
-  scenePass.clear = false; // do not clear the color buffer, preserving the background
+  scenePass.clear = false;
   composer.addPass(scenePass);
 
-  // Optionally add additional postprocessing effects.
   initPostProcessing();
   initTourSpline();
   window.addEventListener("resize", onWindowResize);
@@ -188,50 +183,274 @@ function animate() {
   const dt = clock.getDelta();
   requestAnimationFrame(animate);
 
-  // Update the background shader uniforms (uTime, uResolution, etc.)
+  // Update background shader uniforms.
   const elapsedTime = clock.getElapsedTime();
   bgShaderMat.uniforms.uTime.value = elapsedTime;
   bgShaderMat.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
 
-  // Update tour path movement variables
+  // Update tour path variables.
   path_pos += path_vel * dt;
   path_vel *= (1 - path_fricc);
   path_vel  = clamp(path_vel, -path_terminal_vel, path_terminal_vel);
   path_pos  = wrap(path_pos, 0, 1);
 
-  // If a tour path is defined, move the main camera along it
-  if(tour_path){
+  // If a tour path is defined, update the camera's position.
+  if (tour_path) {
     const p = tour_path.getPoint(path_pos);
     camera.position.set(p.x, p.y, p.z);
   }
 
-  // Now simply render the composer.
   composer.render();
 }
 
 function cleanUpMuseumScene() {
-  // Save camera position
-  localStorage.setItem("cameraPosition", JSON.stringify(camera.position));
+  // Persist the camera's yaw rotation.
+  const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
+  localStorage.setItem("cameraYaw", euler.y);
+  localStorage.setItem("pathPos", JSON.stringify(path_pos));
 
-  // Remove and dispose model if present
-  if(museum) {
+  if (museum) {
     scene.remove(museum);
     museum.traverse((child) => {
       if(child.isMesh) {
         child.geometry.dispose();
-        if (child.material.map) child.material.map.dispose();
+        if(child.material.map) child.material.map.dispose();
         child.material.dispose();
       }
     });
   }
-  if(renderer) {
+  if (renderer) {
     renderer.dispose();
   }
 }
 
-// Call init on page load
 window.onload = initMuseum;
 window.addEventListener("beforeunload", cleanUpMuseumScene);
 window.addEventListener('wheel', handleScroll);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
