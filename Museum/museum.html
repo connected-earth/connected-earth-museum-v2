@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected Earth Museum</title>
+    <link rel="stylesheet" href="museum.css">
+    <link rel="icon" href="../assets/icon.png">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.173.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/",
+        "postprocessing" : "https://cdn.jsdelivr.net/npm/postprocessing@6.36.7/+esm"
+      }
+    }
+    </script>
+    <audio id="bg-music" src="../assets/NightVigil.mp3" autoplay loop></audio>
+</head>
+<body>
+    <div id="loading-screen">
+      <div class="spinner"></div>
+    </div>
+
+    <canvas id="three-canvas"></canvas>
+  
+    <!--<button onclick="location.href='../Cube/cube.html'">Go to Cube</button>-->
+    <header id='header-museum'>
+      <button onclick="location.href='../index.html'">BACK TO HOME</button>
+      <a id="top-right-text">CONNECTED EARTH MUSEUM <br/> use mouse scroll to move</a>
+    </header>
+
+    <div id="left-button" class="nav-button">&#x2B05;</div> <!-- Left Arrow -->
+    <div id="right-button" class="nav-button">&#x27A1;</div> <!-- Right Arrow -->
+
+    <script type="module" src="museum.js"></script>
+</body>
+</html>
+
