@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('back-to-museum-button2').addEventListener('click', () => {
         window.location.href = '/Museum/museum.html';
     });
+
+    document.querySelectorAll('.map-menu input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', handleCheckboxChange);
+    });
 });
 
 async function loadGeoTIFF(url) {
@@ -77,7 +81,12 @@ function handleCheckboxChange(event) {
     const { name, checked } = event.target;
     
     if (name === 'pop' && poplayer) {
-        checked ? poplayer.addTo(popmap) : poplayer.removeFrom(popmap);
+        console.log('pop', checked);
+        if (checked) {
+            poplayer.addTo(popmap);
+        } else {
+            poplayer.removeFrom(popmap);
+        }
     } else if (name === 'aq' && aqlayer) {
         showAq = checked;
         checked ? aqlayer.addTo(popmap) : aqlayer.removeFrom(popmap);
