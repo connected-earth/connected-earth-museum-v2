@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Population Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="popmap.css">
+    <link rel="icon" href="../assets/icon.png">
+</head>
+<body>
+    <div id="popmap"></div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-text">
+            LOADING DATA...<br>
+            <span style="font-size: 0.6em">Please wait</span>
+        </div>
+    </div>
+    
+    <div class="map-menu">
+        <div class="button-container-home" id="back-to-museum-button2">
+            <div class="circle-home">
+                <span class="arrow-home">←</span>
+            </div>
+            <a class="button-text-home">BACK TO MUSEUM</a>
+        </div>
+
+        <h3 style="margin: 0 0 10px 0; font-size: 30px; color: black">Data</h3>
+        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
+            <input type="checkbox" name="pop" checked onchange="handleCheckboxChange(event)">
+            Population Density
+        </label>
+        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
+            <input type="checkbox" name="aq" checked onchange="handleCheckboxChange(event)">
+            Air Quality
+        </label>
+        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
+            <input type="checkbox" name="co2" checked onchange="handleCheckboxChange(event)">
+            Carbon footprint
+        </label>
+    </div>
+    
+    <div class="legend-box"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chroma-js/chroma.min.js"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+
+    <script type="module" src="popmap.js"></script>
+
+</body>
+</html>

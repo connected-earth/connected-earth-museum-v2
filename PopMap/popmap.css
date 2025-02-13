@@ -1,0 +1,184 @@
+.button-container-home {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    position: absolute;
+    margin: 0;
+    top: 2%;
+    left: 83vw;
+    z-index: 1;
+    
+    /* width: 220px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial', sans-serif; /* Use the closest font to the original */
+    font-size: 1rem;
+    cursor: pointer;
+    color: #FFFFFF; /* White text */
+    transition: color 0.3s ease; /* Smooth text color transition */
+    user-select: none;
+  }
+  
+    /* Circle */
+    .circle-home {
+      margin: 0;
+      width: 40px;
+      height: 40px;
+      left: -50px;
+      top: 50%;
+      transform: translateX(+83%);
+      border: 1px solid rgba(176, 176, 176, 0.0); /* Light circular border */
+      border-radius: 50%;
+      opacity: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      transition: left 0.6s ease, border 0.6s ease, transform 0.6s ease; 
+      user-select: none; 
+    }
+    
+    /* Arrow */
+    .arrow-home {
+      font-size: 32px;
+      transform: translateY(-17%);
+      color: rgba(255, 255, 255, 0.0); /* Initially dim arrow */
+      transition: color 0.6s ease;
+      user-select: none; 
+    }
+    
+    /* Button Text */
+    #button-text-museum {
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 1); /* Text is dim initially */
+      transition: color 0.6s ease;
+      user-select: none; 
+    }
+    
+    /* Hover State */
+    .button-container-home:hover .circle-home {
+      opacity: 100%;
+      border: 2px solid rgba(255, 255, 255, 1); /* Full white border on hover */
+      transform: scale(1.1); /* Slightly enlarge the circle */
+      user-select: none; 
+    }
+    
+    .button-container-home:hover .arrow-home {
+      color: rgba(255, 255, 255, 1); /* Arrow becomes fully white */
+      user-select: none;
+    
+    }
+    
+    .button-container-home:hover .button-text-home {
+      color: rgba(255, 255, 255, 1); /* Text becomes fully white */
+      user-select: none; 
+    }
+    
+    #popmap {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .map-menu {
+        position: absolute;
+        top: 10px;
+        left: 60px;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 1000;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        font-size: 3px;
+        color: black;
+    }
+
+    .legend-box {
+        position: absolute;
+        top: 100px;
+        right: 50px;
+        background: rgba(255, 255, 255, 0.3);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 1000;
+        width: 500px;
+        height: 550px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        opacity: 0.9;
+        font-size: 3px;
+        color: black;
+        background-image: url("../assets/images/Legendas-pop.png");
+        background-size: contain;
+    }
+
+    .button-container-home {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .circle-home {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+
+    .arrow-home {
+        color: white;
+        font-size: 20px;
+    }
+
+    .button-text-home {
+        color: black;
+        font-size: 26px;
+        text-decoration: none;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .loading-message {
+        font-size: 26px;
+        font-weight: 700;
+        align-self: center;
+    }  
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .loading-text {
+        font-size: 3em;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    /* Keep existing styles, add hidden class */
+    .hidden {
+        display: none !important;
+    }
