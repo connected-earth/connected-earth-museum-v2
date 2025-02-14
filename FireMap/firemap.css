@@ -1,0 +1,128 @@
+#map-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.map-menu {
+  position: absolute;
+  top: 10px;
+  left: 60px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  color: black;
+}
+
+.map-menu h3 {
+  margin: 0 0 10px 0;
+  font-size: 30px;
+}
+
+.map-menu label {
+  display: block;
+  margin-bottom: 5px;
+  cursor: pointer;
+  font-size: 26px;
+}
+
+.legend-box {
+  position: absolute;
+  top: 100px;
+  right: 60px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: 550px;
+  height: 350px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  background-image: url("../assets/images/legenda-fire.png");
+  background-size: contain;
+}
+
+.custom-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+}
+
+.button-container-home {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.circle-home {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: all 0.6s ease;
+}
+
+.arrow-home {
+  color: white;
+  font-size: 32px;
+  transform: translateY(-17%);
+}
+
+.button-text-home {
+  color: black;
+  font-size: 26px;
+  text-decoration: none;
+}
+
+#loading-text {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 10px 0 0 5px;
+  display: none;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading-text {
+  font-size: 3em;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Keep existing styles, add hidden class */
+.hidden {
+  display: none !important;
+}

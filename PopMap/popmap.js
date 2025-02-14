@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadGeoTIFF(url) {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
-    return await parseGeoraster(arrayBuffer); // ✅ Now works
+    return await parseGeoraster(arrayBuffer); 
 }
 
 async function addPopulationDensityLayer() {
