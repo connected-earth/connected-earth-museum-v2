@@ -41,7 +41,7 @@ function initializeMap() {
 function setupEventListeners() {
     // Navigation button
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = '/museum';
+        window.location.href = '/Museum/museum.html';
     });
 
     // Checkbox handlers
