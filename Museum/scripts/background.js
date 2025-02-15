@@ -4,6 +4,7 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+    uCameraRotation: { value: new THREE.Matrix3().identity() }, // New uniform
     // Background and star parameters:
     skyColor: { value: new THREE.Vector3(0.02, 0.02, 0.02) },
     starBaseColor: { value: new THREE.Vector3(0.8, 1.0, 0.3) },
@@ -13,7 +14,7 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     starTwinkleIntensity: { value: 0.2 },
     layerScale: { value: 20.0 },
     layerScaleStep: { value: 10.0 },
-    layersCount: { value: 3 }
+    layersCount: { value: 4 }
   },
   vertexShader: `
     varying vec2 vUv;
@@ -31,6 +32,7 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
 
     uniform float uTime;
     uniform vec2 uResolution;
+    uniform mat3 uCameraRotation; // New uniform
 
     uniform vec3 skyColor;
     uniform vec3 starBaseColor;
@@ -42,7 +44,6 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     uniform float layerScaleStep;
     uniform int layersCount;
 
-    // Varying from vertex shader
     varying vec2 vUv;
 
     // Hash function based on Inigo Quilez’s work.
@@ -57,11 +58,8 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     vec2 voronoi(vec3 x) {
       vec3 p = floor(x);
       vec3 f = fract(x);
-
       float res = 100.0;
       float id = 0.0;
-
-      // Loop over neighboring cells.
       for (float k = -1.0; k <= 1.0; k += 1.0) {
         for (float j = -1.0; j <= 1.0; j += 1.0) {
           for (float i = -1.0; i <= 1.0; i += 1.0) {
@@ -80,7 +78,6 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
 
     // Adjust hue of the input color.
     vec3 hue(vec3 color, float offset, int range_index) {
-      // Convert RGB to HSV
       vec4 k = vec4(0.0, -1.0/3.0, 2.0/3.0, -1.0);
       vec4 p = mix(vec4(color.bg, k.wz), vec4(color.gb, k.xy), step(color.b, color.g));
       vec4 q = mix(vec4(p.xyw, color.r), vec4(color.r, p.yzx), step(p.x, color.r));
@@ -89,7 +86,6 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
       vec3 hsv = vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)),
                       d / (q.x + e),
                       q.x);
-
       offset = (range_index == 0) ? offset / 360.0 : offset;
       float newHue = hsv.x + offset;
       if(newHue < 0.0) {
@@ -99,8 +95,6 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
       } else {
         hsv.x = newHue;
       }
-
-      // Convert HSV back to RGB.
       vec4 k2 = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
       vec3 p2 = abs(fract(vec3(hsv.x) + k2.xyz) * 6.0 - k2.www);
       vec3 rgb = hsv.z * mix(k2.xxx, clamp(p2 - k2.xxx, 0.0, 1.0), hsv.y);
@@ -108,25 +102,18 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     }
 
     void main() {
-      // Compute normalized screen coordinates.
       vec2 uv = gl_FragCoord.xy / uResolution;
       vec2 pos = uv * 2.0 - 1.0;
       pos.x *= uResolution.x / uResolution.y;
-
-      // Construct a ray direction based on screen-space.
-      vec3 ray = normalize(vec3(pos, 1.0));
-
-      // Start with the base sky color.
+      // Use the camera rotation to transform the ray, anchoring it to world space.
+      vec3 ray = normalize(uCameraRotation * vec3(pos, -1.0));
       vec3 color = skyColor;
-
-      // Loop over several layers to create depth.
       for (int i = 0; i < 12; i++) {
         if(i >= layersCount) break;
         float currentScale = layerScale + float(i) * layerScaleStep;
         vec3 samplePos = ray * currentScale;
         vec2 voro = voronoi(samplePos);
         vec3 rnd = hash(vec3(voro.y));
-
         #ifdef USE_TWINKLE
           float twinkle = sin(uTime * PI * starTwinkleSpeed + rnd.x * TAU);
           twinkle *= starTwinkleIntensity;
@@ -134,11 +121,9 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
         #else
           float star = smoothstep(starIntensity, 0.0, voro.x);
         #endif
-
         vec3 starColor = star * hue((skyColor + starBaseColor), rnd.y * starHueOffset, 1);
         color += starColor;
       }
-
       gl_FragColor = vec4(color, 1.0);
     }
   `,

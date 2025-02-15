@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Globe</title>
+    <link rel="stylesheet" href="globe.css">
+    <link rel="icon" href="../../assets/icon.png">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.173.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/"
+      }
+    }
+    </script>
+</head>
+<body>
+    <canvas id="three-canvas"></canvas>      
+
+    <header id="header-museum">
+      <div id="button-container">
+        <button onclick="location.href='../../Museum/museum.html'"> BACK TO MUSEUM </button>
+      </div>
+    </header>
+
+    <script type="module" src="globe.js"></script>
+</body>
+</html>
+

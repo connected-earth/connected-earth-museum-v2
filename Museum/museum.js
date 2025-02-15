@@ -9,7 +9,8 @@ import {
     GodRaysEffect,
     EffectComposer, 
     EffectPass, 
-    RenderPass 
+    RenderPass,
+    OutlineEffect,
 } from "postprocessing";
 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -18,20 +19,41 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 import { bgShaderMaterial } from './scripts/background.js'
 import { CameraControls } from './scripts/camera.js'
-import { loadPointsFromJson } from './scripts/tour.js'
+import { loadPointsFromJson, loadDict } from './scripts/json_loader.js'
 
-// Utils
+// Utils -------
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
-const wrap  = (v, low, high) =>
-  low + ((((v - low) % (high - low)) + (high - low)) % (high - low));
+const wrap  = (v, low, high) => low + ((((v - low) % (high - low)) + (high - low)) % (high - low));
 const sign  = x => (x > 0) - (x < 0);
+
+function playAudio(audioSrc, legendText) {
+  const audio = new Audio(audioSrc);
+  const legend = document.getElementById("legend");
+  legend.textContent = legendText;
+  legend.style.animation = 'none';
+  void legend.offsetWidth; // Force reflow to restart animation
+  legend.style.animation = 'fadeIn 0.5s ease-in-out forwards';
+
+  audio.play();
+  audio.onended = () => {
+    // Trigger the fade-out animation when the audio ends
+    legend.style.animation = 'fadeOut 0.5s ease-in-out forwards';
+  };
+}
+//-------------
+
+// Controls audio plays
+let progression  = parseInt(localStorage.getItem("progression")) || 0;
+let billy_audios = null;
 
 // Scene variables
 let clock, scene, camera, renderer, composer, controls, museum;
-// Persist only the camera yaw (rotation about Y-axis)
-// If nothing is stored, default to 0.
-let savedCameraYaw = parseFloat(localStorage.getItem("cameraYaw")) || 0;
+const mouse         = new THREE.Vector2();
+let outlinePass;
 const loadingScreen = document.getElementById("loading-screen");
+
+// Persist only the camera yaw (rotation about Y-axis), if nothing is stored, default to 0.
+let savedCameraYaw = parseFloat(localStorage.getItem("cameraYaw")) || 0;
 
 // Background variables
 let bgShaderMat = bgShaderMaterial; // alias if you wish
@@ -61,7 +83,7 @@ function initRenderer() {
 }
 
 function initSceneAndCamera() {
-  scene = new THREE.Scene();
+  scene  = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
   
   // Create Euler angles with pitch and roll set to zero.
@@ -88,10 +110,18 @@ function loadMuseumModel() {
   draco.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
   loader.setDRACOLoader(draco);
 
-  loader.load("../assets/MuseumFinal.glb", (gltf) => {
+  loader.load("../assets/museum/model.glb", (gltf) => {
     museum = gltf.scene;
     scene.add(museum);
     loadingScreen.classList.add("hide");
+    if(progression == 0){
+      loadingScreen.addEventListener("transitionend", function handler() {
+          loadingScreen.style.display = "none";
+          playAudio("../assets/billy_audios/welcome.mp3", billy_audios["welcome"]);
+          loadingScreen.removeEventListener("transitionend", handler);
+      });
+      progression += 1;
+    }
   });
 }
 
@@ -110,6 +140,15 @@ function initBackgroundShader() {
 }
 
 function initPostProcessing() {
+
+  composer.addPass( new OutlineEffect(scene, camera, {
+    edgeStrength: 10.5,
+    pulseSpeed: 0.2,
+    visibleEdgeColor: 0xffffff,
+    hiddenEdgeColor: 0x22090a,
+    blur: false,
+	}));
+
   composer.addPass(new EffectPass(camera, new BloomEffect({
     intensity: 1.1,
     luminanceThreshold: 0.9,
@@ -120,31 +159,26 @@ function initPostProcessing() {
     focalLength: 0.05,
     bokehScale: 0.9
   })));
-  composer.addPass(new EffectPass(camera, new ChromaticAberrationEffect({
-    offset: new THREE.Vector2(0.006, 0.006),
-    radialModulation: true,
-    modulationOffset: 0.5,
-  })));
-  composer.addPass(new EffectPass(camera, new NoiseEffect({ 
-    premultiply: true,  
-    intensity: 0.05
-  })));
-  composer.addPass(new EffectPass(camera, new ToneMappingEffect({
-    adaptive: true,
-    resolution: 256,
-    middleGrey: 0.7,
-    maxLuminance: 16.0,
-    averageLuminance: 1.0
-  })));
+  //composer.addPass(new EffectPass(camera, new ChromaticAberrationEffect({
+  //  offset: new THREE.Vector2(0.0025, 0.0025),
+  //  radialModulation: true,
+  //  modulationOffset: 0.5,
+  //})));
+}
+
+async function initBilly(){
+  billy_audios = await loadDict("../assets/billy_audios/legends.json");
 }
 
 async function initTourSpline(){
-  const tour_path_points = await loadPointsFromJson("./tour.json"); 
+  const tour_path_points = await loadPointsFromJson("../assets/museum/tour.json"); 
   tour_path = new THREE.CatmullRomCurve3(tour_path_points);
 }
 
 function initMuseum() {
+
   clock = new THREE.Clock();
+  initBilly();
   initRenderer();
   initSceneAndCamera();
   initLights();
@@ -154,7 +188,7 @@ function initMuseum() {
   initBackgroundShader();
 
   composer = new EffectComposer(renderer);
-  const bgPass = new RenderPass(bgScene, bgCamera);
+  const bgPass = new RenderPass(bgScene, camera);
   bgPass.clear = true;
   composer.addPass(bgPass);
 
@@ -165,6 +199,8 @@ function initMuseum() {
   initPostProcessing();
   initTourSpline();
   window.addEventListener("resize", onWindowResize);
+  window.addEventListener('mousemove', onMouseMove);
+
   animate();
 }
 
@@ -173,6 +209,41 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   composer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onMouseMove(event){
+  // Convert mouse coordinates to normalized device coordinates (-1 to 1)
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  const raycaster = new THREE.Raycaster(); 
+  raycaster.setFromCamera(mouse, camera);
+
+  // Check if mouse hover over some painting and indicate to user
+  const models = [museum];
+  try{
+    const intersections = raycaster.intersectObjects(models);
+    if (intersections.length > 0) {
+      const object = intersections[0].object // first intersected object
+      // check if a painting has hovered
+      const pattern = /Painting_.+/;
+      if(pattern.test(object.name)){
+        outlinePass.selectedObjects = [object]; 
+      }
+    }
+    //outlinePass.selectedObjects = []; 
+  } catch {}
+
+}
+
+function onMouseClick(event){
+  // Convert mouse coordinates to normalized device coordinates (-1 to 1)
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  const raycaster = new THREE.Raycaster(); 
+  raycaster.setFromCamera(mouse, camera);
+
+ 
+  // Check if mouse hover over some painting and indicate to user
 }
 
 function handleScroll(event) {
@@ -187,6 +258,16 @@ function animate() {
   const elapsedTime = clock.getElapsedTime();
   bgShaderMat.uniforms.uTime.value = elapsedTime;
   bgShaderMat.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+
+  // Compute the inverse rotation matrix from the camera's quaternion.
+  const camMatrix = new THREE.Matrix3().setFromMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(camera.quaternion));
+  camMatrix.invert(); // Invert so that the stars become fixed relative to world space.
+  bgShaderMat.uniforms.uCameraRotation.value.set(
+    camMatrix.elements[0], camMatrix.elements[1], camMatrix.elements[2],
+    camMatrix.elements[3], camMatrix.elements[4], camMatrix.elements[5],
+    camMatrix.elements[6], camMatrix.elements[7], camMatrix.elements[8]
+  );
+
 
   // Update tour path variables.
   path_pos += path_vel * dt;
@@ -208,6 +289,7 @@ function cleanUpMuseumScene() {
   const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
   localStorage.setItem("cameraYaw", euler.y);
   localStorage.setItem("pathPos", JSON.stringify(path_pos));
+  localStorage.setItem("progression", progression);
 
   if (museum) {
     scene.remove(museum);
@@ -227,230 +309,3 @@ function cleanUpMuseumScene() {
 window.onload = initMuseum;
 window.addEventListener("beforeunload", cleanUpMuseumScene);
 window.addEventListener('wheel', handleScroll);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

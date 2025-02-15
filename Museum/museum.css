@@ -6,11 +6,10 @@ body {
     overflow: hidden;
 }
 
+/* Style for buttons */
 button {
-    position: absolute;
+    position: relative; /* Remove absolute positioning */
     font-family: 'Arial', sans-serif;
-    top: 1.2rem;
-    left: 1rem;
     padding: 12px 20px;
     background-color: rgba(0, 0, 0, 0.5);
     letter-spacing: 2px;
@@ -21,6 +20,17 @@ button {
     border-radius: 5px; /* Makes the button more rounded */
     overflow: hidden;
     transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease;
+    width: fit-content;
+}
+
+/* Stacking buttons vertically */
+#button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Spacing between buttons */
+    position: absolute; /* Keeps it positioned on the left */
+    top: 1.2rem;
+    left: 1rem;
 }
 
 /* Text becomes lighter on hover */
@@ -39,7 +49,7 @@ button::before {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     top: 50%;
-    left: 60%;  /* Slightly to the right */
+    left: 60%;
     transform: translate(-50%, -50%);
     transition: width 0.4s ease, height 0.4s ease, left 0.4s ease;
     z-index: 0;
@@ -48,7 +58,7 @@ button::before {
 button:hover::before {
     width: 200%;
     height: 200%;
-    left: 70%; /* Moves further to the right while expanding */
+    left: 70%;
 }
 
 /* Feedback after click for main buttons */
@@ -56,17 +66,18 @@ button:active {
     transform: scale(0.95);
 }
 
+/* Styles for the right-side text */
 #top-right-text {
-    position: fixed; /* Fixed ensures it stays in the same spot even when scrolling */
-    top: 1.6rem; /* Use rem for better scaling */
+    position: fixed; /* Keeps it on the right */
+    top: 1.6rem;
     right: 1rem;
     font-family: 'Arial', sans-serif;
     letter-spacing: 2px;
-    z-index: 100; /* Ensures it's above other elements */
+    z-index: 100;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.0vw; /* Scales with screen width */
+    font-size: 1.0vw;
     user-select: none;
-    white-space: nowrap; /* Prevents text wrapping */
+    white-space: nowrap;
 }
 
 /* Nav-button Styles */
@@ -184,5 +195,45 @@ button:active {
 #loading-screen.hide {
     opacity: 0;
     pointer-events: none;
+}
+
+#legend {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  width: 70%;
+  transform: translateX(-50%);
+  font-family: Arial, sans-serif;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(245, 245, 245, 0.8);
+  text-align: justify;
+  /* Note: text-justify works in some browsers only */
+  text-justify: inter-word;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
 }
 
