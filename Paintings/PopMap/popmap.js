@@ -36,7 +36,7 @@ async function addPopulationDensityLayer() {
     const scale2 = chroma.scale(['white', 'grey', 'black']).domain([0, 100, 1000]);
 
     // Load population layer
-    const popGeoraster = await loadGeoTIFF("../../assets/data/pop2.tif");
+    const popGeoraster = await loadGeoTIFF("../../assets/maps/pop2.tif");
     
     poplayer = new GeoRasterLayer({
         attribution: "European Commission: Global Human Settlement",
@@ -51,7 +51,7 @@ async function addPopulationDensityLayer() {
     }).addTo(popmap);
 
     // Load CO2 layer
-    const co2Response = await fetch('../../assets/data/co2_small.tif');
+    const co2Response = await fetch('../../assets/maps/co2_small.tif');
     const co2Buffer = await co2Response.arrayBuffer();
     const co2Georaster = await parseGeoraster(co2Buffer);
     

@@ -52,7 +52,7 @@ function setupEventListeners() {
 
 async function fetchFireData() {
     try {
-        const data = await d3.csv('../../assets/data/MODIS_C6_1_Global_7d.csv');
+        const data = await d3.csv('../../assets/maps/MODIS_C6_1_Global_7d.csv');
         const highConfidenceFires = data.filter(d => +d.confidence > 95);
         
         markers = highConfidenceFires.map(fire => ({
@@ -72,7 +72,7 @@ async function fetchFireData() {
 
 async function fetchWindData() {
     try {
-        const response = await fetch('../../assets/data/gfs.json');
+        const response = await fetch('../../assets/maps/gfs.json');
         const data = await response.json();
         
         velocityLayer = L.velocityLayer({
@@ -89,7 +89,7 @@ async function fetchWindData() {
 
 async function fetchPrecipitationData() {
     try {
-        const response = await fetch('../../assets/data/prec3.tif');
+        const response = await fetch('../../assets/maps/prec3.tif');
         const arrayBuffer = await response.arrayBuffer();
         const georaster = await parseGeoraster(arrayBuffer);
         
