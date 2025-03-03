@@ -2,95 +2,104 @@ let poplayer = null;
 let co2layer = null;
 let aqlayer = null;
 let popmap = null;
-let showAq = true;
-let loading = true;
 const AQICN_API_KEY = '373e5a508f92508086306dcbe5da75cb7e878df7';
 
-document.addEventListener('DOMContentLoaded', () => {
-    addPopulationDensityLayer();
-    
-    document.getElementById('back-to-museum-button2').addEventListener('click', () => {
-        window.location.href = '../Museum/museum.html';
-    });
-
-    document.querySelectorAll('.map-menu input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', handleCheckboxChange);
-    });
-});
-
 async function loadGeoTIFF(url) {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    return await parseGeoraster(arrayBuffer); 
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  return parseGeoraster(arrayBuffer);
 }
 
-async function addPopulationDensityLayer() {
-    popmap = L.map('popmap').setView([51.505, -0.09], 3);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(popmap);
-
-    const scale1 = chroma.scale(['white', 'orange', 'red']).domain([0, 100, 1000]);
-    const scale2 = chroma.scale(['white', 'grey', 'black']).domain([0, 100, 1000]);
-
-    // Load population layer
-    const popGeoraster = await loadGeoTIFF("../../assets/maps/pop2.tif");
+function createMap() {
+    const map = L.map('popmap', {
+        zoomControl: false,
+        minZoom: 3,
+        maxZoom: 10
+    }).setView([51.505, -0.09], 3);
     
-    poplayer = new GeoRasterLayer({
-        attribution: "European Commission: Global Human Settlement",
-        georaster: popGeoraster,
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+    
+    return map;
+}
+
+async function addGeoRasterLayer(map, url, scale, minThreshold, attribution) {
+    const georaster = await loadGeoTIFF(url);
+    
+    return new GeoRasterLayer({
+        attribution,
+        georaster,
         opacity: 0.75,
         resolution: 64,
         pixelValuesToColorFn: values => {
-            const population = values[0];
-            if (population === -200 || population < 20) return;
-            return scale1(population).hex();
+            const value = values[0];
+            if (value === -200 || value < minThreshold) return;
+            return scale(value).hex();
         }
-    }).addTo(popmap);
+    }).addTo(map);
+}
 
-    // Load CO2 layer
-    const co2Response = await fetch('../../assets/maps/co2_small.tif');
-    const co2Buffer = await co2Response.arrayBuffer();
-    const co2Georaster = await parseGeoraster(co2Buffer);
-    
-    co2layer = new GeoRasterLayer({
-        attribution: "European Commission: Global Human Settlement",
-        georaster: co2Georaster,
-        opacity: 0.75,
-        resolution: 64,
-        pixelValuesToColorFn: values => {
-            const population = values[0];
-            if (population === -200 || population < 10) return;
-            return scale2(population).hex();
-        }
-    }).addTo(popmap);
-
-    // Add air quality layer
-    aqlayer = L.tileLayer(
+function addAirQualityLayer(map) {
+    return L.tileLayer(
         `https://tiles.waqi.info/tiles/usepa-aqi/{z}/{x}/{y}.png?token=${AQICN_API_KEY}`,
         { attribution: 'Air Quality Tiles &copy; <a href="http://waqi.info">waqi.info</a>' }
-    ).addTo(popmap);
-
-    loading = false;
-    document.getElementById('loading-overlay').classList.add('hidden');
+    ).addTo(map);
 }
 
-function handleCheckboxChange(event) {
-    const { name, checked } = event.target;
+async function initMap() {
+    document.getElementById("loading-screen").style.display = "flex";
+
+    popmap = createMap();
     
-    if (name === 'pop' && poplayer) {
-        console.log('pop', checked);
-        if (checked) {
-            poplayer.addTo(popmap);
-        } else {
-            poplayer.removeFrom(popmap);
-        }
-    } else if (name === 'aq' && aqlayer) {
-        showAq = checked;
-        checked ? aqlayer.addTo(popmap) : aqlayer.removeFrom(popmap);
-    } else if (name === 'co2' && co2layer) {
-        checked ? co2layer.addTo(popmap) : co2layer.removeFrom(popmap);
+    const populationScale = chroma.scale(['white', 'yellow', 'orange', 'red']).domain([0, 50, 500, 10000]);
+    const co2Scale = chroma.scale(['white', 'lightblue', 'blue', 'darkblue']).domain([0, 50, 500, 10000]);
+  
+  
+    let loadedLayers = 0;
+    const totalLayers = 3;
+    function checkLoading() {
+      loadedLayers++;
+      if (loadedLayers === totalLayers) {
+        document.getElementById("loading-screen").style.display = "none";
+      }
     }
+
+    poplayer = await addGeoRasterLayer(popmap, '../../assets/maps/pop2.tif', populationScale, 20, "European Commission");
+    poplayer.on("load", checkLoading);
+
+    co2layer = await addGeoRasterLayer(popmap, '../../assets/maps/co2_small.tif', co2Scale, 10, "European Commission");
+    co2layer.on("load", checkLoading);
+
+    aqlayer = addAirQualityLayer(popmap);
+    aqlayer.on("load", checkLoading);
 }
+
+document.addEventListener('DOMContentLoaded', initMap);
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("togglePopulation").addEventListener("change", (e) => {
+      if (e.target.checked) {
+          poplayer.addTo(popmap);
+      } else {
+          popmap.removeLayer(poplayer);
+      }
+  });
+  
+  document.getElementById("toggleCO2").addEventListener("change", (e) => {
+      if (e.target.checked) {
+          co2layer.addTo(popmap);
+      } else {
+          popmap.removeLayer(co2layer);
+      }
+  });
+  
+  document.getElementById("toggleAQ").addEventListener("change", (e) => {
+      if (e.target.checked) {
+          aqlayer.addTo(popmap);
+      } else {
+          popmap.removeLayer(aqlayer);
+      }
+  });
+});

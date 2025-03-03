@@ -6,7 +6,7 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
     uCameraRotation: { value: new THREE.Matrix3().identity() }, // New uniform
     // Background and star parameters:
-    skyColor: { value: new THREE.Vector3(0.02, 0.02, 0.02) },
+    skyColor: { value: new THREE.Vector3(0.01, 0.01, 0.01) },
     starBaseColor: { value: new THREE.Vector3(0.8, 1.0, 0.3) },
     starHueOffset: { value: 0.6 },
     starIntensity: { value: 0.08 },
@@ -14,7 +14,7 @@ export const bgShaderMaterial = new THREE.ShaderMaterial({
     starTwinkleIntensity: { value: 0.2 },
     layerScale: { value: 20.0 },
     layerScaleStep: { value: 10.0 },
-    layersCount: { value: 4 }
+    layersCount: { value: 6 }
   },
   vertexShader: `
     varying vec2 vUv;

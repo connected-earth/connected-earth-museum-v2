@@ -12,6 +12,7 @@ export class CameraControls {
     this.camera.rotation.order = 'YXZ';
 
     this.isDragging = false;
+    this.dragEnabled = true; // Toggle drag on/off with this variable
     this.previousMousePosition = { x: 0, y: 0 };
 
     this.initEventListeners();
@@ -20,32 +21,33 @@ export class CameraControls {
   initEventListeners() {
     // --- Mouse Events ---
     this.renderer.domElement.addEventListener('mousedown', (event) => {
-      // Only respond to the left mouse button (button 0)
+      if (!this.dragEnabled) return; // only enable if dragEnabled is true
       if (event.button !== 0) return;
       this.isDragging = true;
       this.previousMousePosition = { x: event.clientX, y: event.clientY };
     });
 
     this.renderer.domElement.addEventListener('mousemove', (event) => {
-      if (!this.isDragging) return;
+      if (!this.dragEnabled || !this.isDragging) return;
 
       const deltaMove = {
-        x: -1*(event.clientX - this.previousMousePosition.x),
-        y: -1*(event.clientY - this.previousMousePosition.y),
+        x: -(event.clientX - this.previousMousePosition.x),
+        y: -(event.clientY - this.previousMousePosition.y),
       };
 
       this.updateCameraRotation(deltaMove.x, deltaMove.y);
       this.previousMousePosition = { x: event.clientX, y: event.clientY };
     });
 
-    // Listen for mouseup and only react if it's the left button being released.
     document.addEventListener('mouseup', (event) => {
+      if (!this.dragEnabled) return;
       if (event.button !== 0) return;
       this.isDragging = false;
     });
 
     // --- Touch Events ---
     this.renderer.domElement.addEventListener('touchstart', (event) => {
+      if (!this.dragEnabled) return;
       if (event.touches.length === 1) {
         this.isDragging = true;
         this.previousMousePosition = {
@@ -56,11 +58,11 @@ export class CameraControls {
     });
 
     this.renderer.domElement.addEventListener('touchmove', (event) => {
-      if (!this.isDragging || event.touches.length !== 1) return;
+      if (!this.dragEnabled || !this.isDragging || event.touches.length !== 1) return;
 
       const deltaMove = {
-        x: -1*(event.touches[0].clientX - this.previousMousePosition.x),
-        y: -1*(event.touches[0].clientY - this.previousMousePosition.y),
+        x: -(event.touches[0].clientX - this.previousMousePosition.x),
+        y: -(event.touches[0].clientY - this.previousMousePosition.y),
       };
 
       this.updateCameraRotation(deltaMove.x, deltaMove.y);
@@ -90,6 +92,15 @@ export class CameraControls {
 
     // Update the camera's rotation using the stored yaw and pitch values
     this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
+  }
+
+  // Optional methods to toggle dragging externally
+  enableDrag() {
+    this.dragEnabled = true;
+  }
+
+  disableDrag() {
+    this.dragEnabled = false;
   }
 }
 

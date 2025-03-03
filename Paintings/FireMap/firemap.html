@@ -12,42 +12,35 @@
 
 </head>
 <body>
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-text">
-            LOADING DATA...<br>
-            <span style="font-size: 0.6em">Please wait</span>
-        </div>
+    <div id="firemap"></div>
+
+    <div id="loading-screen">
+      <div class="spinner"></div>
     </div>
 
-    <div id="map-container">
-        <!-- Control Menu -->
-        <div class="map-menu">
-            <div class="button-container-home" id="back-button">
-                <div class="circle-home">
-                    <span className='arrow-home'>←</span>
-                </div>
-                <a class="button-text-home">BACK TO MUSEUM</a>
-            </div>
-            <h3>Data</h3>
-            <label>
-                <input type="checkbox" name="prec" checked> Precipitation
-            </label>
-            <label>
-                <input type="checkbox" name="wind" checked> Wind
-            </label>
-            <label>
-                <input type="checkbox" name="heatmap"> Fire Heatmap
-            </label>
-            <label>
-                <input type="checkbox" name="fireMarkers" checked> Fire Markers
-            </label>
+    <div id="button-container">
+      <button onclick="location.href='../../Museum/museum.html'"> BACK TO MUSEUM </button>
+    </div>
+
+    <div id="controls">
+        <label><input type="checkbox" id="toggleFiremarkers" checked> Fire Hotspots Counts </label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: green;"></span> Low (0-10)</div>
+            <div><span class="legend-color" style="background: orange;"></span> Medium (10-100)</div>
+            <div><span class="legend-color" style="background: red;"></span> High (100+)</div>
         </div>
-        
-        <!-- Legend Box -->
-        <div class="legend-box"></div>
-        
-        <!-- Map Container -->
-        <div id="map"></div>
+        <label><input type="checkbox" id="toggleVelocity" checked> Wind Velocity </label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: yellow;"></span> Low </div>
+            <div><span class="legend-color" style="background: orange;"></span> Medium </div>
+            <div><span class="legend-color" style="background: red;"></span> High </div> 
+        </div>
+        <label><input type="checkbox" id="togglePrec" checked> Precipitation </label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: lightblue;"></span> Low </div>
+            <div><span class="legend-color" style="background: blue;"></span> Medium </div>
+            <div><span class="legend-color" style="background: darkblue;"></span> High </div>
+        </div>
     </div>
 
     <!-- Scripts -->

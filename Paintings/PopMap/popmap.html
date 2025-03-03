@@ -8,40 +8,42 @@
     <meta charset="UTF-8">
 
 </head>
-<body>
+<body> 
     <div id="popmap"></div>
 
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-text">
-            LOADING DATA...<br>
-            <span style="font-size: 0.6em">Please wait</span>
-        </div>
+    <div id="loading-screen">
+      <div class="spinner"></div>
     </div>
-    
-    <div class="map-menu">
-        <div class="button-container-home" id="back-to-museum-button2">
-            <div class="circle-home">
-                <span className='arrow-home'>←</span>
-            </div>
-            <a class="button-text-home">BACK TO MUSEUM</a>
-        </div>
 
-        <h3 style="margin: 0 0 10px 0; font-size: 30px; color: black">Data</h3>
-        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
-            <input type="checkbox" name="pop" checked>
-            Population Density
-        </label>
-        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
-            <input type="checkbox" name="aq" checked>
-            Air Quality
-        </label>
-        <label style="display: block; margin-bottom: 5px; cursor: pointer; color: black; font-size: 26px">
-            <input type="checkbox" name="co2" checked>
-            Carbon footprint
-        </label>
+    <div id="button-container">
+      <button onclick="location.href='../../Museum/museum.html'"> BACK TO MUSEUM </button>
     </div>
-    
-    <div class="legend-box"></div>
+
+    <div id="controls">
+        <label><input type="checkbox" id="togglePopulation" checked> Population Density</label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: white;"></span> Low</div>
+            <div><span class="legend-color" style="background: yellow;"></span> Medium Low </div>
+            <div><span class="legend-color" style="background: orange;"></span> Medium High </div>
+            <div><span class="legend-color" style="background: red;"></span> High</div>
+        </div>
+        <label><input type="checkbox" id="toggleCO2" checked> CO2 Levels</label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: white;"></span> Low</div>
+            <div><span class="legend-color" style="background: lightblue;"></span> Medium Low </div>
+            <div><span class="legend-color" style="background: blue;"></span> Medium High </div>
+            <div><span class="legend-color" style="background: darkblue;"></span> High </div>
+        </div>
+        <label><input type="checkbox" id="toggleAQ" checked> Air Quality Index </label>
+        <div id="legend">
+            <div><span class="legend-color" style="background: green;"></span> Good (0-50) </div>
+            <div><span class="legend-color" style="background: yellow;"></span> Moderate (51-100) </div>
+            <div><span class="legend-color" style="background: orange;"></span> Bad (101-150) </div>
+            <div><span class="legend-color" style="background: red;"></span> Unhealthy (151-200) </div>
+            <div><span class="legend-color" style="background: purple;"></span> Dangerous (201-300) </div>
+            <div><span class="legend-color" style="background: brown;"></span> Hazardou (300+) </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chroma-js/chroma.min.js"></script>
@@ -54,3 +56,5 @@
 
 </body>
 </html>
+
+

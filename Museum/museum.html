@@ -14,12 +14,11 @@
     {
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.173.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/",
-        "postprocessing" : "https://cdn.jsdelivr.net/npm/postprocessing@6.36.7/+esm"
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/"
       }
     }
     </script>
-    <audio id="bg-music" src="../assets/museum/NightVigil.mp3" autoplay loop></audio>
+    <!--<audio id="bg-music" src="../assets/museum/NightVigil.mp3" autoplay loop></audio>-->
 </head>
 <body>
     <div id="loading-screen">
@@ -43,6 +42,7 @@
     <div id="left-button" class="nav-button">&#x2B05;</div> <!-- Left Arrow -->
     <div id="right-button" class="nav-button">&#x27A1;</div> <!-- Right Arrow -->
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/gsap.min.js"></script>
     <script type="module" src="museum.js"></script>
 </body>
 </html>
