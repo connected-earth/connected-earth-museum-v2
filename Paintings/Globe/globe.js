@@ -194,11 +194,12 @@ window.addEventListener("DOMContentLoaded", () => {
     // Place the GUI inside the provided container
     const guiContainer = document.querySelector(".lil-gui");
     guiContainer.appendChild(gui.domElement);
-    gui.domElement.style.height = "400px";
+    gui.domElement.style.height = "450px";
+    gui.domElement.style.width = "310px";
     gui.domElement.style.transform = "scale(1.2)";
     gui.domElement.style.position = "absolute";
     gui.domElement.style.left = "50px";
-    gui.domElement.style.top = "150px";
+    gui.domElement.style.top = "250px";
     gui.domElement.style.borderRadius = "8px";
     gui.domElement.classList.add("lil-gui");
   
@@ -261,10 +262,11 @@ window.addEventListener("DOMContentLoaded", () => {
       .onChange((value) => {
         let newImagePath = "";
         let newImagePath2 = "";
+        overlayImageEl.style.display = "block";
+        overlayImage2El.style.display = "block";
         switch (value) {
           case "Avg Land Temperature":
             newImagePath = "../../assets/globe/avg_temperature_land/colorbar.png";
-            overlayImage2El.style.display = "none"; // Hide unused overlay
             currentTextureArray = tempTextures;
             currYear = 2000;
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/avg_temperature_land/2000.png");
@@ -278,7 +280,6 @@ window.addEventListener("DOMContentLoaded", () => {
   
           case "Avg Ocean Temperature":
             newImagePath = "../../assets/globe/avg_temperature_ocean/colorbar.png";
-            overlayImage2El.style.display = "none"; // Hide unused overlay
             currentTextureArray = ocean_tempTextures;
             currYear = 2010;
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/avg_temperature_ocean/2010.jpeg");
@@ -306,7 +307,6 @@ window.addEventListener("DOMContentLoaded", () => {
   
           case "Vegetation":
             newImagePath = "../../assets/globe/vegetation/colorbar.png";
-            overlayImage2El.style.display = "none"; // Hide unused overlay
             currentTextureArray = vegTextures;
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/vegetation/2013.jpeg");
             gsap.to(camera.position, { x: 0, y: 0, z: 4, duration: 2, ease: "power3.inOut" });
@@ -320,7 +320,6 @@ window.addEventListener("DOMContentLoaded", () => {
   
           case "Carbon Monoxide":
             newImagePath = "../../assets/globe/carbon/colorbar.png";
-            overlayImage2El.style.display = "none"; // Hide unused overlay
             currentTextureArray = carbonTextures;
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/carbon/2015.jpeg");
             gsap.to(camera.position, { x: 0, y: 0, z: 5, duration: 2, ease: "power3.inOut" });
@@ -334,7 +333,6 @@ window.addEventListener("DOMContentLoaded", () => {
   
           case "Wildfire":
             newImagePath = "../../assets/globe/fire/colorbar.png";
-            overlayImage2El.style.display = "none"; // Hide unused overlay
             currentTextureArray = fireTextures;
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/fire/2015.jpeg");
             gsap.to(camera.position, { x: 0, y: 0, z: 4, duration: 2, ease: "power3.inOut" });
@@ -347,9 +345,6 @@ window.addEventListener("DOMContentLoaded", () => {
             break;
   
           case "Standard":
-            overlayImageEl.style.display = "none"; // Hide unused overlay
-            overlayImage2El.style.display = "none"; // Hide unused overlay
-
             uniforms.colorTexture.value = textureLoader.load("../../assets/globe/00_earthmap1k.jpg");
             currentTextureArray = [];
             currMin = 2000;
@@ -366,8 +361,19 @@ window.addEventListener("DOMContentLoaded", () => {
         sliceControl.setValue(currYear);
   
         // Update overlay images if needed
+        
         currentImage = newImagePath;
         currentImage2 = newImagePath2;
+        if (currentImage == "") {
+          overlayImageEl.style.display = "none";
+        } else {
+          overlayImageEl.style.display = "block";
+        }
+        if (currentImage2 == "") {
+          overlayImage2El.style.display = "none";
+        } else {
+          overlayImage2El.style.display = "block";
+        }
         overlayImageEl.src = currentImage;
         overlayImage2El.src = currentImage2;
       });
