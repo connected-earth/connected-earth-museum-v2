@@ -34,12 +34,12 @@ const PATH_FRICTION = 0.065;
 const PATH_TERMINAL_VELOCITY = 0.10;
 const SCROLL_MULTIPLIER = 0.5;
 
-const FILM_SHADER_N_INTENSITY = 0.3;
-const FILM_SHADER_S_INTENSITY = 0.1;
+const FILM_SHADER_N_INTENSITY = 0.06;
+const FILM_SHADER_S_INTENSITY = 0.03;
 const FILM_SHADER_S_COUNT = 4096;
 const FILM_SHADER_GRAYSCALE = 0;
 
-const CHROMA_SHADER_AMOUNT = 0.0008;
+const CHROMA_SHADER_AMOUNT = 0.00008;
 
 const OUTLINE_EDGE_STRENGTH = 25.0;
 const OUTLINE_EDGE_GLOW = 2.0;
@@ -49,9 +49,9 @@ const OUTLINE_VISIBLE_EDGE_COLOR   = '#fe5000';
 const OUTLINE_VISIBLE_EDGE_COLOR_2 = '#7a17ef';
 const OUTLINE_HIDDEN_EDGE_COLOR    = '#190aff';
 
-const BLOOM_INTENSITY = 0.6;
+const BLOOM_INTENSITY = 1.3;
 const BLOOM_THRESHOLD = 0.25;
-const BLOOM_RADIUS = 0.9;
+const BLOOM_RADIUS = 0.86;
 
 const GSAP_DURATION = 2;
 
@@ -105,7 +105,7 @@ function playAudio(audioSrc, legendText) {
 let progression  = parseInt(localStorage.getItem("progression")) || 0;
 let billy_audios_legends = null;
 
-let clock, scene, camera, renderer, composer, controls, museum;
+let clock, scene, camera, renderer, composer, controls, paintings, walls, furniture;
 let outlinePass; 
 let currentAudio;
 
@@ -185,7 +185,7 @@ function initRenderer() {
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.5;
+  renderer.toneMappingExposure = 1.2;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.autoClear = false;
 }
@@ -202,11 +202,11 @@ function initSceneAndCamera() {
 }
 
 function initLights() {
-  scene.add(new THREE.AmbientLight(0xf0f0f0, 0.1));
+  scene.add(new THREE.AmbientLight(0xf0f0f0, 1));
 }
 
 function loadEnvironment() {
-  new EXRLoader().load('../assets/exr/the_sky_is_on_fire_4k.exr', (texture) => {
+  new EXRLoader().load('../assets/exr/rogland_clear_night_2k.exr', (texture) => {
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.environment = texture;
   });
@@ -218,9 +218,9 @@ function loadMuseumModel() {
   draco.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
   loader.setDRACOLoader(draco);
 
-  loader.load("../assets/museum/model.glb", (gltf) => {
-    museum = gltf.scene;
-    scene.add(museum);
+  loader.load("../assets/museum/Paintings.glb", (gltf) => {
+    paintings = gltf.scene;
+    scene.add(paintings);
     loadingScreen.classList.add("hide");
     if (progression === 0) {
       loadingScreen.addEventListener("transitionend", function handler() {
@@ -230,6 +230,36 @@ function loadMuseumModel() {
       });
       progression += 1;
     }
+  });
+
+  loader.load("../assets/museum/Museum_Floor.glb", (gltf) => {
+    scene.add(gltf.scene);
+  });
+
+  loader.load("../assets/museum/Museum_Furniture.glb", (gltf) => {
+    furniture = gltf.scene;
+    scene.add(gltf.scene);
+  });
+
+  loader.load("../assets/museum/Museum_Walls.glb", (gltf) => {
+    walls = gltf.scene;
+    scene.add(gltf.scene);
+  });
+
+  loader.load("../assets/museum/Museum_Signs.glb", (gltf) => {
+    scene.add(gltf.scene);
+  });
+
+  loader.load("../assets/museum/Museum_Emissive.glb", (gltf) => {
+    console.log(gltf.scene);
+    gltf.scene.traverse((o) => {
+      if (o.isMesh) {
+        o.material.emissive = new THREE.Color( 0xffffff );
+        o.material.emissiveIntensity = 1;
+        console.log(o.material)
+      }
+    });
+    scene.add(gltf.scene);
   });
 }
 
@@ -380,7 +410,7 @@ function checkMouseOverPainting(mouse) {
   raycaster.setFromCamera(mouse, camera);
 
   // Check if mouse hovers over a painting
-  const models = [museum];
+  const models = [paintings, walls, furniture];
   try {
     const intersections = raycaster.intersectObjects(models);
     if (intersections.length > 0) {
@@ -608,9 +638,9 @@ function cleanUpMuseumScene() {
   localStorage.setItem("pathPos", JSON.stringify(path_pos));
   localStorage.setItem("progression", progression);
 
-  if (museum) {
-    scene.remove(museum);
-    museum.traverse((child) => {
+  if (paintings) {
+    scene.remove(paintings);
+    paintings.traverse((child) => {
       if (child.isMesh) {
         child.geometry.dispose();
         if (child.material.map) child.material.map.dispose();
