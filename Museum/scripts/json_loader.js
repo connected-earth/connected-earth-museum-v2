@@ -18,6 +18,21 @@ export async function loadPointsFromJson(filePath) {
     }
 }
 
+export async function loadPaintingsInfo(jsonPath) {
+    try {
+        const response = await fetch(jsonPath);
+        if (!response.ok) {
+            throw new Error(`Failed to load JSON: ${response.statusText}`);
+        }
+        const paintingsInfo = await response.json();
+        console.log("Paintings loaded:", paintingsInfo);
+        return paintingsInfo;
+    } catch (error) {
+        console.error("Error loading paintings:", error);
+        return [];
+    }
+}
+
 export async function loadDict(jsonPath) {
     try {
         const response = await fetch(jsonPath);
