@@ -17,7 +17,7 @@ import { FilmShader } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/
 
 import { bgShaderMaterial } from './scripts/background.js';
 import { CameraControls } from './scripts/camera.js';
-import { loadPointsFromJson, loadDict } from './scripts/json_loader.js';
+import { loadPointsFromJson, loadPaintingsInfo, loadDict } from './scripts/json_loader.js';
 
 // ==============================
 // Constants & Configuration
@@ -45,8 +45,9 @@ const OUTLINE_EDGE_STRENGTH = 25.0;
 const OUTLINE_EDGE_GLOW = 2.0;
 const OUTLINE_EDGE_THICKNESS = 8.0;
 const OUTLINE_PULSE_PERIOD = 0.5;
-const OUTLINE_VISIBLE_EDGE_COLOR = '#fe5000';
-const OUTLINE_HIDDEN_EDGE_COLOR = '#190aff';
+const OUTLINE_VISIBLE_EDGE_COLOR   = '#fe5000';
+const OUTLINE_VISIBLE_EDGE_COLOR_2 = '#7a17ef';
+const OUTLINE_HIDDEN_EDGE_COLOR    = '#190aff';
 
 const BLOOM_INTENSITY = 0.6;
 const BLOOM_THRESHOLD = 0.25;
@@ -54,20 +55,11 @@ const BLOOM_RADIUS = 0.9;
 
 const GSAP_DURATION = 2;
 
+const PAINTING_FOCUS_DISTANCE = 10;
 const PAINTING_HOVER_DISTANCE = 40;
-const PAINTING_NORMAL_OFFSET = 5.0;
+const PAINTING_NORMAL_OFFSET  = 5.0;
 
 const TOUR_STOPS_DEFAULT = [0.001, 0.0936, 0.1470, 0.2777, 0.3355, 0.4434, 0.6308, 0.6563];
-
-const PaintingsInfo = [
-  { name: "Painting_1", audioID: "globe",   audioUrl: "../assets/billy_audios/globe.mp3",   distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_2", audioID: "slide1",  audioUrl: "../assets/billy_audios/slide1.mp3",  distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_3", audioID: "firemap",  audioUrl: "../assets/billy_audios/firemap.mp3",  distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_5", audioID: "popmap", audioUrl: "../assets/billy_audios/popmap.mp3", distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_6", audioID: "game",    audioUrl: "../assets/billy_audios/game.mp3",    distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_7", audioID: "slides",  audioUrl: "../assets/billy_audios/slides.mp3",  distance: PAINTING_NORMAL_OFFSET },
-  { name: "Painting_8", audioID: "slides",  audioUrl: "../assets/billy_audios/slides.mp3",  distance: PAINTING_NORMAL_OFFSET },
-];
 
 // ==============================
 // Utility Functions
@@ -128,11 +120,13 @@ let bgMesh, bgRenderTarget;
 let bgCamera, bgScene;
 
 // Tour / Movement Variables
+let paintings_info = null;
 let tour_path = null;
 let tour_stops = TOUR_STOPS_DEFAULT.slice();
 let auto_tour_start  = null;
 let tour_target      = 0.0;
-let moving_to_painting = false;
+let moving_to_painting  = false;
+let looking_at_painting = false;
 let moveToNext = false;
 let moveToPrev = false;
 
@@ -164,6 +158,19 @@ function getPrevTarget(P, stops) {
     if (stops[i] < P - TOLERANCE) return stops[i];
   }
   return stops[stops.length - 1];
+}
+
+function getClosestStop(P, stops){
+  let min_dist = Infinity;
+  let closest_stop;
+  for (let i = 0; i < stops.length; i++) {
+    const distance = P.distanceTo(tour_path.getPoint(stops[i]));
+    if (distance < min_dist) {
+      min_dist = distance;
+      closest_stop = stops[i];
+    }
+  }
+  return closest_stop;
 }
 
 // ==============================
@@ -287,6 +294,7 @@ async function initBilly() {
 }
 
 async function initTour() {
+  paintings_info = await loadPaintingsInfo("../assets/museum/paintings.json");
   const tour_path_points = await loadPointsFromJson("../assets/museum/tour.json"); 
   tour_path = new THREE.CatmullRomCurve3(tour_path_points);
 }
@@ -328,6 +336,45 @@ function onWindowResize() {
   composer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function lookAtPainting(){
+  const buttons = document.querySelectorAll("#button-container button");
+  const leftButton = document.getElementById("left-button");
+  const rightButton = document.getElementById("right-button");
+  
+  outlinePass.visibleEdgeColor.set(OUTLINE_VISIBLE_EDGE_COLOR_2);
+
+  leftButton.style.display = "none";
+  rightButton.style.display = "none";
+  buttons[0].style.display = "none";
+  buttons[1].style.display = "inline-block"; 
+}
+
+function backToTour(){
+  const buttons = document.querySelectorAll("#button-container button");
+  const leftButton = document.getElementById("left-button");
+  const rightButton = document.getElementById("right-button");
+  
+  const closest_stop_point = tour_path.getPoint(path_pos);
+
+  gsap.to(camera.position, {
+    x: closest_stop_point.x,
+    y: closest_stop_point.y,
+    z: closest_stop_point.z,
+    duration: GSAP_DURATION,
+    ease: "power3.inOut",
+    onComplete: () => {
+      controls.dragEnabled = true;
+      looking_at_painting  = false;
+      leftButton.style.display = "inline-block";
+      rightButton.style.display = "inline-block";
+      buttons[0].style.display = "inline-block";
+      buttons[1].style.display = "none"; 
+      outlinePass.visibleEdgeColor.set(OUTLINE_VISIBLE_EDGE_COLOR);
+    }
+  });
+
+}
+
 function checkMouseOverPainting(mouse) {
   const raycaster = new THREE.Raycaster(); 
   raycaster.setFromCamera(mouse, camera);
@@ -338,7 +385,7 @@ function checkMouseOverPainting(mouse) {
     const intersections = raycaster.intersectObjects(models);
     if (intersections.length > 0) {
       const object = intersections[0].object;
-      const paintingInfo = PaintingsInfo.find(info => info.name === object.name);
+      const paintingInfo = paintings_info.find(info => info.name === object.name);
       if (paintingInfo) {
         return [true, intersections[0], paintingInfo];
       }
@@ -359,6 +406,7 @@ function onMouseMove(event) {
     const dist = camera.position.distanceTo(intersection.point);
     if (moveToPrev || moveToNext) return;
     if (dist >= PAINTING_HOVER_DISTANCE) return;
+
     outlinePass.selectedObjects = [intersection.object];
   }
 }
@@ -368,27 +416,24 @@ function onMouseClick(event) {
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   const [isOverPainting, intersection, paintingInfo] = checkMouseOverPainting(mouse);
+
   if (isOverPainting) {  
     const dist = camera.position.distanceTo(intersection.point);
     if (dist >= PAINTING_HOVER_DISTANCE) return; 
     if (moveToPrev || moveToNext) return;
 
-    // Change of modes
-    moving_to_painting   = true;
-    controls.isDragging  = false;
-    controls.dragEnabled = false;
-
-    // Find closest stop
-    let min_dist = Infinity;
-    let closest_tour_stop;
-    for (let i = 0; i < tour_stops.length; i++) {
-      const p = tour_path.getPoint(tour_stops[i]);
-      const distance = intersection.point.distanceTo(p);
-      if (distance < min_dist) {
-        min_dist = distance;
-        closest_tour_stop = tour_stops[i];
-      }
-    }
+    // Compute face area to hack out of weird cases... don't ask
+    const face = intersection.face;
+    const geometry = intersection.object.geometry;
+    const pos = geometry.attributes.position;
+    const a = new THREE.Vector3().fromBufferAttribute(pos, face.a);
+    const b = new THREE.Vector3().fromBufferAttribute(pos, face.b);
+    const c = new THREE.Vector3().fromBufferAttribute(pos, face.c);
+    const ab = new THREE.Vector3().subVectors(b, a);
+    const ac = new THREE.Vector3().subVectors(c, a);
+    const cross = new THREE.Vector3().crossVectors(ab, ac);
+    const area = cross.length() * 0.5;
+    if(area < 100) return;
 
     // Compute centroid of painting mesh and normal of clicked face
     const mesh = intersection.object;
@@ -403,6 +448,29 @@ function onMouseClick(event) {
     // Compute objective position and lookat
     const targetPosition = centroid.clone().add(painting_normal.multiplyScalar(paintingInfo.distance));
     const targetFocus = centroid;
+
+    // If already looking at paiting then dive into it
+    if (looking_at_painting){
+      gsap.to(camera.position, {
+        x: targetFocus.x,
+        y: targetFocus.y,
+        z: targetFocus.z,
+        duration: GSAP_DURATION,
+        ease: "power3.inOut",
+        onComplete: () => {
+          window.location.href = paintingInfo.path;
+        }
+      });
+      return;
+    }
+ 
+    // save back point
+    const closest_stop = getClosestStop(targetPosition, tour_stops);
+
+    // Change of modes
+    moving_to_painting   = true;
+    controls.isDragging  = false;
+    controls.dragEnabled = false;
 
     const currentFocus = camera.position.clone().add(
       camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(CAMERA_FOCUS_DISTANCE)
@@ -432,18 +500,21 @@ function onMouseClick(event) {
       },
       onComplete: () => {
         controls.dragEnabled = true;
-        moving_to_painting = false;
-        path_pos = closest_tour_stop; 
-        controls.yaw = camera.rotation.y;
-        controls.pitch = camera.rotation.x;
+        moving_to_painting   = false;
+        looking_at_painting  = true;
+        path_pos             = closest_stop;
+        controls.yaw         = camera.rotation.y;
+        controls.pitch       = camera.rotation.x;
+        lookAtPainting();
         playAudio(paintingInfo.audioUrl, billy_audios_legends[paintingInfo.audioID]);
       }
     });
+
   }
 }
 
 function handleScroll(event) {
-  if (!moveToPrev && !moveToNext && !moving_to_painting) {
+  if (!moveToPrev && !moveToNext && !moving_to_painting && !looking_at_painting) {
     path_vel -= sign(event.deltaY) * SCROLL_MULTIPLIER * PATH_ACCELERATION;
   }
 }
@@ -452,8 +523,9 @@ function handleScroll(event) {
 // DOM Content & UI Listeners
 // ==============================
 document.addEventListener("DOMContentLoaded", function() {
-  const leftButton = document.getElementById("left-button");
+  const leftButton  = document.getElementById("left-button");
   const rightButton = document.getElementById("right-button");
+  const tourButton = document.getElementById("tour-button");
 
   rightButton.addEventListener("click", function() {
     if (moving_to_painting) return;
@@ -468,6 +540,8 @@ document.addEventListener("DOMContentLoaded", function() {
     moveToPrev = true;
     tour_target = getPrevTarget(path_pos, tour_stops);
   });
+
+  tourButton.addEventListener("click", backToTour);
 
   auto_tour_start = path_pos;
 });
@@ -495,7 +569,7 @@ function animate() {
     camMatrix.elements[6], camMatrix.elements[7], camMatrix.elements[8]
   );
 
-  if (!moving_to_painting) {
+  if (!moving_to_painting && !looking_at_painting) {
     // Update tour path velocity based on button inputs.
     if (moveToNext) { 
       path_vel = 2.0 * PATH_ACCELERATION;
@@ -517,10 +591,8 @@ function animate() {
     }
 
     // Update camera position along the tour path.
-    if (tour_path) {
-      const p = tour_path.getPoint(path_pos);
-      camera.position.set(p.x, p.y, p.z);
-    }
+    const p = tour_path.getPoint(path_pos);
+    camera.position.set(p.x, p.y, p.z);
   }
 
   composer.render();

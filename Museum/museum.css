@@ -24,6 +24,12 @@ button {
     width: fit-content;
 }
 
+.tour-btn{
+  background-color: rgba(175, 175, 175, 0.9);
+  color: rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+}
+
 /* Stacking buttons vertically */
 #button-container {
     display: flex;
@@ -32,6 +38,10 @@ button {
     position: absolute; /* Keeps it positioned on the left */
     top: 1.2rem;
     left: 1rem;
+}
+
+#button-container button:last-child {
+    display: none;
 }
 
 /* Text becomes lighter on hover */
