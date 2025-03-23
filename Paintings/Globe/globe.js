@@ -1,4 +1,10 @@
-// Wrap all code inside a DOMContentLoaded callback.
+
+
+
+
+
+
+
 window.addEventListener("DOMContentLoaded", () => {
     // Replace these with your actual modules or functions as needed.
     // For example, you could include getStarfield and museum_map as global variables
@@ -190,16 +196,11 @@ window.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", handleResize);
   
     // Set up lil-gui
-    const gui = new lil.GUI({ autoPlace: false });
+    const gui = new lil.GUI({ autoPlace: true });
     // Place the GUI inside the provided container
     const guiContainer = document.querySelector(".lil-gui");
     guiContainer.appendChild(gui.domElement);
-    gui.domElement.style.height = "450px";
-    gui.domElement.style.width = "310px";
-    gui.domElement.style.transform = "scale(1.2)";
-    gui.domElement.style.position = "absolute";
-    gui.domElement.style.left = "50px";
-    gui.domElement.style.top = "250px";
+    gui.domElement.style.top = "1.8rem";
     gui.domElement.style.borderRadius = "8px";
     gui.domElement.classList.add("lil-gui");
   
