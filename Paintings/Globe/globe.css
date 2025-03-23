@@ -1,74 +1,78 @@
+
 .globe-render {
-    position: relative; /* Ensure positioning context for absolute children */
-    width: 100%; /* Make it responsive */
-    height: 100vh; /* Full viewport height */
-  }
-html, body {
-margin: 0;
-padding: 0;
+  position: relative; /* Ensure positioning context for absolute children */
+  width: 100%; /* Make it responsive */
+  height: 100vh; /* Full viewport height */
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.overlay-image {
+  position: absolute;
+  top: 520px; /* Fixed position for larger screens */
+  left: 30px;
+  z-index: 10;
+  width: 350px; /* Default width */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .overlay-image {
-    position: absolute;
-    top: 520px; /* Fixed position for larger screens */
-    left: 30px;
-    z-index: 10;
-    width: 350px; /* Default width */
-    height: auto; /* Maintain aspect ratio */
+    top: 400px; /* Adjust position for smaller screens */
+    left: 20px; /* Reduce left margin for smaller screens */
+    width: 150px; /* Smaller width for mobile devices */
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .overlay-image {
-      top: 400px; /* Adjust position for smaller screens */
-      left: 20px; /* Reduce left margin for smaller screens */
-      width: 150px; /* Smaller width for mobile devices */
-    }
+}
+
+@media (max-width: 460px) {
+  .overlay-image {
+    top: 700px; /* Adjust position for smaller screens */
+    left: 20px; /* Reduce left margin for smaller screens */
+    width: 150px; /* Smaller width for mobile devices */
   }
-  
-  @media (max-width: 460px) {
-    .overlay-image {
-      top: 700px; /* Adjust position for smaller screens */
-      left: 20px; /* Reduce left margin for smaller screens */
-      width: 150px; /* Smaller width for mobile devices */
-    }
-  }
-  
+}
+
+.overlay-image2 {
+  position: absolute;
+  top: 250px; /* Fixed position for larger screens */
+  right: 50px;
+  z-index: 10;
+  width: 500px; /* Default width */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .overlay-image2 {
-    position: absolute;
-    top: 250px; /* Fixed position for larger screens */
-    right: 50px;
-    z-index: 10;
-    width: 500px; /* Default width */
-    height: auto; /* Maintain aspect ratio */
+    top: 400px; /* Adjust position for smaller screens */
+    left: 200px; /* Reduce left margin for smaller screens */
+    width: 150px; /* Smaller width for mobile devices */
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .overlay-image2 {
-      top: 400px; /* Adjust position for smaller screens */
-      left: 200px; /* Reduce left margin for smaller screens */
-      width: 150px; /* Smaller width for mobile devices */
-    }
+}
+
+@media (max-width: 460px) {
+  .overlay-image2 {
+    top: 700px; /* Adjust position for smaller screens */
+    left: 20px; /* Reduce left margin for smaller screens */
+    width: 150px; /* Smaller width for mobile devices */
   }
-  
-  @media (max-width: 460px) {
-    .overlay-image2 {
-      top: 700px; /* Adjust position for smaller screens */
-      left: 20px; /* Reduce left margin for smaller screens */
-      width: 150px; /* Smaller width for mobile devices */
-    }
-  }
-  
-  .lil-gui .name {
-    font-size: 12px;  /* Adjust the font size to your preference */
-  }
-  
-  .text-display {
-    padding: 10px;
-    line-height: 0.75rem;
-    text-align: justify;
-    hyphens: auto;
-  }
+}
+
+.lil-gui .name {
+  font-size: 12px;  /* Adjust the font size to your preference */
+}
+
+.text-display {
+  padding: 10px;
+  line-height: 0.75rem;
+  text-align: justify;
+  hyphens: auto;
+}
   
  
 /* Style for buttons */
