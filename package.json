@@ -2,6 +2,11 @@
     "name": "nasa-space-apps",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://connected-earth.github.io/connected-earth-museum"
-  }
-  
+    "homepage": "https://connected-earth.github.io/connected-earth-museum",
+    "dependencies": {
+        "gh-pages": "^6.3.0"
+    },
+    "scripts": {
+      "deploy": "gh-pages -d . -b gh-pages"
+    }
+}

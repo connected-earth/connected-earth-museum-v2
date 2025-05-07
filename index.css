@@ -94,6 +94,7 @@ button:active::after {
   opacity: 0;
 }
 
+
 @media (max-width: 1032px) {
   .container {
     width: 80%;  /* Adjust the container width for small screens */

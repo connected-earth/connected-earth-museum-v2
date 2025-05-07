@@ -109,22 +109,13 @@ const page_slides = {
         "The main CO2 consumers that can help mitigate these issues are plants, but deforestation rates are not decreasing.",
       ],
     },
-    {
+    // TERMINAR: Gabriel
+    { 
       type: 5,
       background: {
         url: "#000",
       },
-      title: "Deforestation in Bolivia",
-      graphs: [
-        {
-          url: "/assets/images/slides/slider/before.jpg",
-          alt: "Deforestation in Bolivia - before",
-        },
-        {
-          url: "/assets/images/slides/slider/after.jpg",
-          alt: "Deforestation in Bolivia - after",
-        },
-      ]
+      title: "Deforestation in Bolivia"
     },
    
   ],
@@ -258,18 +249,6 @@ const page_slides = {
       description: [
         "Individually we can help with simple actions, like recycling, being conscious about water use and using public transportation. Also raising awareness for theses issues can aid in creating a global united front to help save our planet and ourselves."
       ],
-    },
-    {
-      type: 2,
-      background: {
-        url: "/assets/images/slides/backgrounds/connected_earth.png",
-        alt: "What can we do?",
-      },
-      graphs: [],
-      title: "What can we do?",
-      description: [
-        "Individually we can help with simple actions, like recycling, being conscious about water use and using public transportation. Also raising awareness for theses issues can aid in creating a global united front to help save our planet and ourselves."
-      ],
     }
   ],
 };
@@ -349,9 +328,10 @@ function render_slide() {
         <p>July 2, 1986 - August 22, 2022</p>
         <span style="margin-bottom: 16px;">Drag to move</span>
 
-        <!-- <Slider beforeImage={graphs?.[0]} afterImage={graphs?.[1]} /> -->
+        <div id="sliderRoot"></div>
       `;
 
+      new ImageSlider(sliderRoot, config.beforeImage, config.afterImage);
       break;
     default:
       console.log(`Sorry, we are out of ${expr}.`);

@@ -1,51 +1,51 @@
 [
     {
         "name": "Painting_1",
-        "path": "../Paintings/Globe/globe.html",
+        "path": "/Paintings/Globe/globe.html",
         "audioID": "globe",
-        "audioUrl": "../assets/billy_audios/globe.mp3",
+        "audioUrl": "/assets/billy_audios/globe.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_2",
-        "path": "../Paintings/Slide1/slide1.html",
+        "path": "/Paintings/Slides/slide_1.html",
         "audioID": "slide1",
-        "audioUrl": "../assets/billy_audios/slide1.mp3",
+        "audioUrl": "/assets/billy_audios/slide1.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_3",
-        "path": "../Paintings/FireMap/firemap.html",
+        "path": "/Paintings/FireMap/firemap.html",
         "audioID": "firemap",
-        "audioUrl": "../assets/billy_audios/firemap.mp3",
+        "audioUrl": "/assets/billy_audios/firemap.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_5",
-        "path": "../Paintings/PopMap/popmap.html",
+        "path": "/Paintings/PopMap/popmap.html",
         "audioID": "popmap",
-        "audioUrl": "../assets/billy_audios/popmap.mp3",
+        "audioUrl": "/assets/billy_audios/popmap.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_6",
-        "path": "../Paintings/Game/game.html",
+        "path": "/Paintings/Game",
         "audioID": "game",
-        "audioUrl": "../assets/billy_audios/game.mp3",
+        "audioUrl": "/assets/billy_audios/game.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_7",
-        "path": "../Paintings/Slide2/slide2.html",
+        "path": "/Paintings/Slides/slide_2.html",
         "audioID": "slides",
-        "audioUrl": "../assets/billy_audios/slides.mp3",
+        "audioUrl": "/assets/billy_audios/slides.mp3",
         "distance": 4.0
     },
     {
         "name": "Painting_8",
-        "path": "../Paintings/Slide3/slide3.html",
+        "path": "/Paintings/Slides/slide_3.html",
         "audioID": "slides",
-        "audioUrl": "../assets/billy_audios/slides.mp3",
+        "audioUrl": "/assets/billy_audios/slides.mp3",
         "distance": 4.0
     }
 ]
