@@ -287,7 +287,7 @@ function handleAnswer(e) {
     if (questionIdx + 1 === questions.length) {
         if (!isCorrect && life - 1 === 0) return;
 
-        window.location.href = `/Paintings/Game/win.html`;
+        window.location.href = `./win.html`;
     }
 }
 
@@ -363,7 +363,7 @@ function animate() {
                 renderHearts();
                 if (life === 0) {
                     localStorage.setItem('gameData', JSON.stringify(answers))
-                    window.location.href = `/Paintings/Game/lose.html`;
+                    window.location.href = `./lose.html`;
                 }
                 return false;
             }
@@ -390,7 +390,7 @@ function animate() {
                 if (life === 0) {
                     localStorage.setItem('gameData', JSON.stringify(answers)) 
 
-                    window.location.href = `/Paintings/Game/lose.html`;
+                    window.location.href = `./lose.html`;
                 }
                 return false;
             }
