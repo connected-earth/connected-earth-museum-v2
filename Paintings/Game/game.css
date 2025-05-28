@@ -13,7 +13,7 @@ body {
     min-height: 100vh;
     overflow: hidden;
     padding: 24px;
-    background: url('/assets/images/game-background.jpg') no-repeat center / cover;
+    background: url('../../assets/images/game-background.jpg') no-repeat center / cover;
 }
 
 .game-container h2 {

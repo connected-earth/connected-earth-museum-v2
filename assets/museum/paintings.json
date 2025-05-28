@@ -29,7 +29,7 @@
     },
     {
         "name": "Painting_6",
-        "path": "/Paintings/Game",
+        "path": "/Paintings/Game/game.html",
         "audioID": "game",
         "audioUrl": "/assets/billy_audios/game.mp3",
         "distance": 4.0

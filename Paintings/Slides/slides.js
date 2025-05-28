@@ -3,12 +3,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/populationDensity.png",
+        url: "../../assets/images/slides/backgrounds/populationDensity.png",
         alt: "Population Density",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/global-land-use-graphic.jpeg",
+          url: "../../assets/images/slides/graphs/global-land-use-graphic.jpeg",
           alt: "global-land-use-graphic.",
         }
       ],
@@ -20,16 +20,16 @@ const page_slides = {
     {
       type: 4,
       background: {
-        url: "/assets/images/slides/backgrounds/carbonFootprint.jpg",
+        url: "../../assets/images/slides/backgrounds/carbonFootprint.jpg",
         alt: "Carbon fotprint",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/global-greenhouse-gas-emissions.png",
+          url: "../../assets/images/slides/graphs/global-greenhouse-gas-emissions.png",
           alt: "global greenhouse gas emissions",
         },
         {
-          url: "/assets/images/slides/graphs/carbon-emission-graph.png",
+          url: "../../assets/images/slides/graphs/carbon-emission-graph.png",
           alt: "carbon emission graph",
         }
 
@@ -43,7 +43,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/polution.png",
+        url: "../../assets/images/slides/backgrounds/polution.png",
         alt: "Pollution",
       },
       title: "Pollution",
@@ -54,17 +54,17 @@ const page_slides = {
     {
       type: 4,
       background: {
-        url: "/assets/images/slides/backgrounds/carbonFootprint.jpg",
+        url: "../../assets/images/slides/backgrounds/carbonFootprint.jpg",
         alt: "Carbon fotprint",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/rising-temp-1.png",
+          url: "../../assets/images/slides/graphs/rising-temp-1.png",
           maxWidth: '50%',
           alt: "rising temperature 1",
         },
         {
-          url: "/assets/images/slides/graphs/rising-temp-2.png",
+          url: "../../assets/images/slides/graphs/rising-temp-2.png",
           alt: "rising temperature 2",
         }
 
@@ -78,12 +78,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/populationDensity.png",
+        url: "../../assets/images/slides/backgrounds/populationDensity.png",
         alt: "Population Density",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/energy-go.jpg",
+          url: "../../assets/images/slides/graphs/energy-go.jpg",
           alt: "energy go",
         }
       ],
@@ -95,12 +95,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/populationDensity.png",
+        url: "../../assets/images/slides/backgrounds/populationDensity.png",
         alt: "Population Density",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/forests.jpg",
+          url: "../../assets/images/slides/graphs/forests.jpg",
           alt: "forests",
         }
       ],
@@ -123,12 +123,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/polution.png",
+        url: "../../assets/images/slides/backgrounds/polution.png",
         alt: "polution",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/world-on-fire.png",
+          url: "../../assets/images/slides/graphs/world-on-fire.png",
           alt: "world-on-fire",
         }
       ],
@@ -140,12 +140,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/populationDensity.png",
+        url: "../../assets/images/slides/backgrounds/populationDensity.png",
         alt: "Population Density",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/droughts-and-fire.jpg",
+          url: "../../assets/images/slides/graphs/droughts-and-fire.jpg",
           alt: "world-on-fire",
         }
       ],
@@ -157,12 +157,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/populationDensity.png",
+        url: "../../assets/images/slides/backgrounds/populationDensity.png",
         alt: "Background",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/what-causes-the-fire.png",
+          url: "../../assets/images/slides/graphs/what-causes-the-fire.png",
           alt: "what-causes-the-fire",
         }
       ],
@@ -174,7 +174,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/wild-fires.jpg",
+        url: "../../assets/images/slides/backgrounds/wild-fires.jpg",
         alt: "wild fires",
       },
       graphs: [],
@@ -186,7 +186,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/smoke-wind.png",
+        url: "../../assets/images/slides/backgrounds/smoke-wind.png",
         alt: "smoke wind",
       },
       graphs: [],
@@ -198,12 +198,12 @@ const page_slides = {
     {
       type: 3,
       background: {
-        url: "/assets/images/slides/backgrounds/airQuality.jpg",
+        url: "../../assets/images/slides/backgrounds/airQuality.jpg",
         alt: "Air Quality",
       },
       graphs: [
         {
-          url: "/assets/images/slides/graphs/air-quality.png",
+          url: "../../assets/images/slides/graphs/air-quality.png",
           alt: "Air Quality",
         }
       ],
@@ -217,7 +217,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/carbonFootprint.jpg",
+        url: "../../assets/images/slides/backgrounds/carbonFootprint.jpg",
         alt: "Carbon fotprint",
       },
       graphs: [],
@@ -229,7 +229,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/what-can-we-do.jpg",
+        url: "../../assets/images/slides/backgrounds/what-can-we-do.jpg",
         alt: "What can we do?",
       },
       graphs: [],
@@ -241,7 +241,7 @@ const page_slides = {
     {
       type: 2,
       background: {
-        url: "/assets/images/slides/backgrounds/connected_earth.png",
+        url: "../../assets/images/slides/backgrounds/connected_earth.png",
         alt: "What can we do?",
       },
       graphs: [],

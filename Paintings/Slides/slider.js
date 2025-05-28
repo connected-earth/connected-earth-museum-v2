@@ -1,11 +1,11 @@
 // Configuration - set your image URLs here
 const config = {
     beforeImage: {
-        url: "/assets/images/slides/slider/before.jpg",
+        url: "../../assets/images/slides/slider/before.jpg",
         alt: "Deforestation in Bolivia - before",
     },
     afterImage: {
-        url: "/assets/images/slides/slider/after.jpg",
+        url: "../../assets/images/slides/slider/after.jpg",
         alt: "Deforestation in Bolivia - after",
     }
 };

@@ -1,12 +1,28 @@
 {
     "name": "nasa-space-apps",
     "version": "0.1.0",
-    "private": true,
-    "homepage": "https://connected-earth.github.io/connected-earth-museum",
-    "dependencies": {
+    "homepage": "https://connected-earth.github.io/connected-earth-museum-v2",
+    "rootDir": "./",
+    "devDependencies": {
+        "autoprefixer": "^10.4.13",
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^11.0.0",
+        "css-loader": "^6.7.3",
+        "cssnano": "^5.1.14",
+        "glob": "^8.0.3",
+        "html-loader": "^4.2.0",
+        "html-webpack-plugin": "^5.5.0",
+        "postcss-loader": "^7.0.2",
+        "serve": "^14.2.4",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1",
+        "webpack-dev-server": "^4.11.1",
         "gh-pages": "^6.3.0"
     },
     "scripts": {
-      "deploy": "gh-pages -d . -b gh-pages"
+        "deploy": "gh-pages -d dist -b gh-pages",
+        "start": "webpack serve --env NODE_ENV=development --env PUBLIC_URL=/",
+        "build": "webpack --env NODE_ENV=production --env PUBLIC_URL=/connected-earth-museum-v2/"
     }
 }

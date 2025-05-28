@@ -187,13 +187,13 @@ let projectiles2 = [];
 function init() {
     // Load images
     centralBallImage = new Image();
-    centralBallImage.src = '/assets/images/game/earth.svg';
+    centralBallImage.src = '../../assets/images/game/earth.svg';
 
     orbitingBallImage = new Image();
-    orbitingBallImage.src = '/assets/images/game/tornado.svg';
+    orbitingBallImage.src = '../../assets/images/game/tornado.svg';
 
     orbitingBallImage2 = new Image();
-    orbitingBallImage2.src = '/assets/images/game/industry.svg';
+    orbitingBallImage2.src = '../../assets/images/game/industry.svg';
 
     // Create hearts for life display
     renderHearts();
@@ -234,7 +234,7 @@ function renderQuestions() {
         questionDiv.innerHTML = `
             <h2>${question.title}</h2>
             <div class="question-content">
-                <img src="/assets/images/game/astronaut.svg" alt="Astronaut" width="100">
+                <img src="../../assets/images/game/astronaut.svg" alt="Astronaut" width="100">
                 <div class="options">
                     ${question.options.map(option => `
                         <button data-question="${idx}" data-correct="${option.correct}">${option.text}</button>
