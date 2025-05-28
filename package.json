@@ -23,6 +23,6 @@
     "scripts": {
         "deploy": "gh-pages -d dist -b gh-pages",
         "start": "webpack serve --env NODE_ENV=development --env PUBLIC_URL=/",
-        "build": "webpack --env NODE_ENV=production --env PUBLIC_URL=/connected-earth-museum-v2/"
+        "build": "rm -rf dist && webpack --env NODE_ENV=production --env PUBLIC_URL=/connected-earth-museum-v2/"
     }
 }
