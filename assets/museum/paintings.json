@@ -29,7 +29,7 @@
   },
   {
     "name": "Painting_6",
-    "path": "/connected-earth-museum-v2/Paintings/Game",
+    "path": "/connected-earth-museum-v2/Paintings/Game/game.html",
     "audioID": "game",
     "audioUrl": "/connected-earth-museum-v2/assets/billy_audios/game.mp3",
     "distance": 4
