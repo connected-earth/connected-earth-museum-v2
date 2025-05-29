@@ -255,7 +255,19 @@ function loadMuseumModel() {
     gltf.scene.traverse((o) => {
       if (o.isMesh) {
         o.material.emissive = new THREE.Color( 0xffffff );
-        o.material.emissiveIntensity = 1;
+        o.material.emissiveIntensity = 0.88;
+        console.log(o.material)
+      }
+    });
+    scene.add(gltf.scene);
+  });
+
+  loader.load("../assets/museum/Museum_Emissive_Logos.glb", (gltf) => {
+    console.log(gltf.scene);
+    gltf.scene.traverse((o) => {
+      if (o.isMesh) {
+        o.material.emissive = new THREE.Color( 0xffffff );
+        o.material.emissiveIntensity = 0.845;
         console.log(o.material)
       }
     });
